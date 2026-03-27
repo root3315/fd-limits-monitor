@@ -8,6 +8,7 @@ Quick tool to check file descriptor limits and usage on Linux. I wrote this beca
 - Shows per-process FD usage and limits (soft/hard)
 - Lists top FD consumers
 - Threshold checking for monitoring/alerting
+- JSON output format for programmatic use
 
 ## Installation
 
@@ -57,7 +58,17 @@ echo $?  # 0=OK, 1=WARNING, 2=CRITICAL
 python fd_limits_monitor.py --check --warning 80 --critical 95
 ```
 
+### JSON output
+
+```bash
+python fd_limits_monitor.py -f json
+python fd_limits_monitor.py -f json -a
+python fd_limits_monitor.py -f json --check
+```
+
 ## Output example
+
+### Text output
 
 ```
 SYSTEM-WIDE FILE DESCRIPTOR LIMITS
@@ -74,6 +85,30 @@ PROCESS FD LIMITS (PID: 12345, python3)
   Hard Limit:        1048576
   Usage:             2.25% [OK]
   Available:         1001
+```
+
+### JSON output
+
+```json
+{
+  "system_fd": {
+    "allocated_fds": 4224,
+    "system_max": 9223372036854775807,
+    "usage_percentage": 0.0,
+    "status": "OK",
+    "available": 922337203685473383
+  },
+  "process_fd": {
+    "pid": 12345,
+    "process_name": "python3",
+    "current_usage": 23,
+    "soft_limit": 1024,
+    "hard_limit": 1048576,
+    "usage_percentage": 2.25,
+    "status": "OK",
+    "available": 1001
+  }
+}
 ```
 
 ## Why I built this
